@@ -1,6 +1,8 @@
 <?php
 include $_SERVER['DOCUMENT_ROOT'] . '/data/const.php';
 include $_SERVER['DOCUMENT_ROOT'] . '/db/database.php';
+include $_SERVER['DOCUMENT_ROOT'] . '/render/render.php';
+$menu = database\getMainMenu();
 ?>
 
     <!DOCTYPE html>
@@ -26,28 +28,17 @@ include $_SERVER['DOCUMENT_ROOT'] . '/db/database.php';
         <script src="/templates/js/lib/jquery-ui.js"></script>
         <script src="/templates/js/scripts.js" defer=""></script>
     </head>
-    <body>
-    <header class="page-header container">
-        <a class="page-header__logo" href="/">
-            <img src="/templates/img/logo.svg" alt="Fashion">
-        </a>
-        <nav class="page-header__menu">
-            <ul class="main-menu main-menu--header">
-                <li>
-                    <a class="main-menu__item" href="/">Главная</a>
-                </li>
-                <li>
-                    <a class="main-menu__item" href="#">Новинки</a>
-                </li>
-                <li>
-                    <a class="main-menu__item active">Sale</a>
-                </li>
-                <li>
-                    <a class="main-menu__item" href="/delivery.html">Доставка</a>
-                </li>
-            </ul>
-        </nav>
-    </header>
+<body>
+<header class="page-header container">
+    <a class="page-header__logo" href="/">
+        <img src="/templates/img/logo.svg" alt="Fashion">
+    </a>
+    <nav class="page-header__menu">
+        <ul class="main-menu main-menu--header">
+            <?php render\renderMenu($menu); ?>
+        </ul>
+    </nav>
+</header>
 
 <?php
 database\closeConnect(database\connect());
