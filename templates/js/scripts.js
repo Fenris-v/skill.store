@@ -240,9 +240,10 @@ const checkList = (list, btn) => {
 
 };
 const addList = document.querySelector('.add-list');
+const form = document.querySelector('.custom-form');
+const popupEnd = document.querySelector('.page-add__popup-end');
 if (addList) {
 
-    const form = document.querySelector('.custom-form');
     labelHidden(form);
 
     const addButton = addList.querySelector('.add-list__item--add');
@@ -274,34 +275,34 @@ if (addList) {
 
         reader.readAsDataURL(file);
 
+        let data = new FormData();
+
+        let files = $(addInput).prop('files');
+        $.each(files, (key, item) => {
+            data.append(key, item);
+        });
+
+        $.ajax({
+            url: '/data/uploadImage.php',
+            type: 'POST',
+            data: data,
+            processData: false,
+            contentType: false,
+            success: (response) => {
+                $('.add_product__form button.button').attr('data-image-id', response)
+            }
+        })
+
     });
 
     const button = document.querySelector('.button');
-    const popupEnd = document.querySelector('.page-add__popup-end');
 
     button.addEventListener('click', (evt) => {
 
         evt.preventDefault();
 
-        form.hidden = true;
-        popupEnd.hidden = false;
-
-    })
-
-}
-
-const productsList = document.querySelector('.page-products__list');
-if (productsList) {
-
-    productsList.addEventListener('click', evt => {
-
-        const target = evt.target;
-
-        if (target.classList && target.classList.contains('product-item__delete')) {
-
-            productsList.removeChild(target.parentElement);
-
-        }
+        // form.hidden = true;
+        // popupEnd.hidden = false;
 
     });
 
@@ -445,7 +446,89 @@ let itemClick = () => {
     });
 }
 
+let ajaxAdd = (params) => {
+    $.ajax({
+        url: '/db/addProduct.php',
+        type: 'POST',
+        data: params,
+        success: (response) => {
+            if (response === 'success') {
+                form.hidden = true;
+                popupEnd.hidden = false;
+            } else {
+                alert('Произошла ошибка, проверьте введенные данные!')
+            }
+        }
+    });
+}
+
 $(document).ready(() => {
+    $('.removeImage').on('click', (e) => {
+        e.preventDefault();
+        let uri = $(e.target).data('uri');
+        let params = 'uri=' + uri;
+        $.ajax({
+            url: '/db/deleteImage.php',
+            type: 'POST',
+            data: params,
+            success: (response) => {
+                if (response === 'success') {
+                    $(e.target).parents('li').remove();
+                }
+            }
+        })
+    });
+
+    $('.add_product__form button.button').on('click', (e) => {
+        e.preventDefault();
+
+        let name = $('#product-name').val();
+        let price = $('#product-price').val().replace(/\s+/g, '');
+        let categories = $('.custom-form__select option:selected');
+        let catId = '';
+        for (let i = 0; i < categories.length; i++) {
+            if (i === 0) {
+                catId = categories[i].value;
+            } else {
+                catId += ',' + categories[i].value;
+            }
+        }
+        let isNew = '';
+        if ($('#new').prop('checked')) {
+            isNew = '&new=on';
+        }
+        let isSale = '';
+        if ($('#sale').prop('checked')) {
+            isSale = '&sale=on';
+        }
+
+        let type = $(e.target).data('edit');
+        let itemId = '';
+        if (type === 'edit') {
+            itemId = '&item=' + $(e.target).data('id');
+        }
+        let imageId = $(e.target).data('image-id');
+        imageId = imageId === undefined ? '' : '&image=' + imageId;
+        let params = 'name=' + name + '&price=' + price + '&categories=' + catId + isNew + isSale + '&type=' + type + imageId + itemId;
+        ajaxAdd(params);
+    });
+
+
+    $('.product-item__delete').on('click', (e) => {
+        let id = $(e.target).data('id');
+        let params = 'id=' + id;
+        $.ajax({
+            url: '/db/removeGoods.php',
+            type: 'POST',
+            data: params,
+            success: (response) => {
+                if (response === 'success') {
+                    $(e.target).parents('.product-item').remove();
+                }
+            }
+        })
+    });
+
     itemClick();
 
     $('.custom-form.js-order button[type="submit"]').on('click', (e) => {
@@ -455,7 +538,6 @@ $(document).ready(() => {
         let id = $(e.target).data('id');
         let params = $.param(inputs);
         params += '&id=' + id + '&sum=' + sum;
-        console.log(params);
         $.ajax({
             url: '/data/validateForm.php',
             type: 'POST',
@@ -483,6 +565,5 @@ $(document).ready(() => {
     $('.submit_filter').on('click', (e) => {
         e.preventDefault();
         changeUrl(1);
-
     });
 });

@@ -215,8 +215,8 @@ function renderAdminProduct(array $product): void
         <span class="product-item__field"><?= number_format($product['price'], 0, '', ' '); ?> руб.</span>
         <span class="product-item__field"><?= $product['category']; ?></span>
         <span class="product-item__field"><?= (bool)$product['new'] ? 'Да' : 'Нет'; ?></span>
-        <a href="<?= $_SERVER['DOCUMENT_ROOT']; ?>/add.html" class="product-item__edit" aria-label="Редактировать"></a>
-        <button class="product-item__delete"></button>
+        <a href="/admin/products/add/?id=<?= $product['id']; ?>" class="product-item__edit" aria-label="Редактировать"></a>
+        <button data-id="<?= $product['id']; ?>" class="product-item__delete"></button>
     </li>
     <?php
 }

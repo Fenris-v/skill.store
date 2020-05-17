@@ -84,7 +84,7 @@ function getAdminMenu(): array
  */
 function getCategory(): array
 {
-    return getResult(mysqli_query(connect(), "SELECT name, url FROM categories"));
+    return getResult(mysqli_query(connect(), "SELECT id, name, url FROM categories"));
 }
 
 /**
@@ -252,12 +252,12 @@ function getGoods(string $uri, array $price): array
     $limit = PER_PAGE;
     $uri = explode('?', mysqli_real_escape_string(connect(), $uri));
     if (empty($_GET) && $uri[0] === '/') {
-        $query = "SELECT goods.id, name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link FROM goods
+        $query = "SELECT goods.id, name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link FROM goods
         LEFT JOIN good_image ON good_id=id
         LEFT JOIN images AS i ON i.id=image_id
         GROUP BY name LIMIT $pos, $limit";
     } elseif (empty($_GET) && $uri[0] !== '/') {
-        $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+        $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -301,7 +301,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
 
     if (!isset($_GET['sort']) || !isset($_GET['type'])) {
         if ($uri[0] === '/' && $sale && !$new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -310,7 +310,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE sale=true && price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } elseif ($uri[0] === '/' && $sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -319,7 +319,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE sale=true && new=true && price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } elseif ($uri[0] === '/' && !$sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -328,7 +328,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE new=true && price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && $sale && !$new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -337,7 +337,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE cat.url='$uri[0]' && sale=true && price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && $sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -346,7 +346,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE cat.url='$uri[0]' && sale=true && new=true && price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && !$sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -355,7 +355,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE cat.url='$uri[0]' && new=true && price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } elseif ($uri[0] === '/') {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -364,7 +364,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE price>=$min && price<=$max
         GROUP BY name LIMIT $pos, $limit";
         } else {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -377,7 +377,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         $sort = $_GET['sort'];
         $type = $_GET['type'] === 'asc' ? 'ASC' : 'DESC';
         if ($uri[0] === '/' && $sale && !$new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -386,7 +386,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE sale=true && price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] === '/' && $sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -395,7 +395,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE sale=true && new=true && price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] === '/' && !$sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -404,7 +404,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE new=true && price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && $sale && !$new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -413,7 +413,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE cat.url='$uri[0]' && sale=true && price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && $sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -422,7 +422,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE cat.url='$uri[0]' && sale=true && new=true && price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && !$sale && $new) {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -431,7 +431,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE cat.url='$uri[0]' && new=true && price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] === '/') {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -440,7 +440,7 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         WHERE price>=$min && price<=$max
         GROUP BY $sort $type LIMIT $pos, $limit";
         } else {
-            $query = "SELECT g.id, g.name, uri, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
+            $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
@@ -503,6 +503,29 @@ function getAdminProducts(): array
         LEFT JOIN good_category AS gc ON good_id=g.id
         LEFT JOIN categories AS cat ON cat.id=category_id
         GROUP BY g.id"
+    );
+    return getResult($result);
+}
+
+/**
+ * Возвращает массив с данными по конкертному товару
+ * @param int $id - id товара, который нужно получить
+ * @return array - массив с данными
+ */
+function getItem(int $id): array
+{
+    $result = mysqli_query(
+        connect(),
+        "SELECT g.name, price, GROUP_CONCAT(DISTINCT cat.name SEPARATOR ', ') AS category, 
+        GROUP_CONCAT(DISTINCT cat.id SEPARATOR ', ') AS category_id,
+        GROUP_CONCAT(DISTINCT i.link SEPARATOR ', ') AS image, i.id AS image_id, new, sale
+        FROM goods AS g
+        LEFT JOIN good_category AS gc ON gc.good_id=g.id
+        LEFT JOIN categories AS cat ON cat.id=category_id
+        LEFT JOIN good_image AS gi ON gi.good_id=g.id
+        LEFT JOIN images AS i ON i.id=image_id
+        WHERE g.id=$id
+        GROUP BY g.name"
     );
     return getResult($result);
 }

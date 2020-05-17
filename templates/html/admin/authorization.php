@@ -1,8 +1,6 @@
-
-
 <main class="page-authorization">
   <h1 class="h h--1">Авторизация</h1>
-  <form class="custom-form" action="<?= $_SERVER['PHP_SELF'] ?>" method="post">
+  <form class="custom-form" action="/admin/" method="post">
     <label>
       <input type="text" name="login" placeholder="E-mail" class="custom-form__input" required="">
     </label>

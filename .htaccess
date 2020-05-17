@@ -12,7 +12,6 @@ RewriteRule ^women/$ index.php [L]
 RewriteRule ^children/$ index.php [L]
 RewriteRule ^accessories/$ index.php [L]
 RewriteRule ^delivery/$ route/delivery.php [L]
-#RewriteRule ^admin/$ route/admin.php [L]
 
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
