@@ -415,6 +415,7 @@ let paginationClick = () => {
     });
 }
 
+let deliverySelector = $('#dev-yes');
 let itemClick = () => {
     let price;
     let id;
@@ -430,19 +431,23 @@ let itemClick = () => {
         let delivery = parseInt(container.data('delivery'));
         let min = parseInt(container.data('min'));
         price = parseInt(item.data('price'));
+        let sum = price;
         id = parseInt(item.data('id'));
-        if (price >= min) {
-            orderSum.text('Всего ' + price + ' руб.')
+        if (sum < min && deliverySelector.attr('checked') === 'checked') {
+            sum += delivery;
+            orderSum.text(price + ' руб. Стоимость доставки - ' + delivery + '. Всего ' + sum + ' руб.');
         } else {
-            price += delivery;
-            orderSum.text(item.data('price') + ' руб. Стоимость доставки - ' + delivery + '. Всего ' + price + ' руб.');
+            orderSum.text('Всего ' + sum + ' руб.')
         }
 
         let buy = $('.custom-form .button');
         buy.attr('data-sum', price);
         buy.attr('data-id', id);
 
-        orderSum.attr('data-sum', price);
+        orderSum.attr('data-sum', sum);
+        orderSum.attr('data-del', delivery);
+        orderSum.attr('data-min', min);
+        orderSum.attr('data-price', price);
     });
 }
 
@@ -463,6 +468,40 @@ let ajaxAdd = (params) => {
 }
 
 $(document).ready(() => {
+    $('#dev-yes').on('change', (e) => {
+        let orderSum = $('.order__price');
+        let container = $(e.target).parents('.shop-page__order');
+        let prices = container.find('.order__price');
+        let price = prices.data('price');
+        let delivery = prices.data('del');
+        let min = prices.data('min');
+        let sum = prices.data('sum');
+
+        if (price < min) {
+            sum = price + delivery;
+
+            prices.attr('data-sum', sum);
+
+            orderSum.text(price + ' руб. Стоимость доставки - ' + delivery + '. Всего ' + sum + ' руб.');
+
+            $('.custom-form.js-order button[type="submit"]').attr('data-sum', sum);
+        } else {
+            orderSum.text(price + ' руб. Стоимость доставки - ' + 0 + '. Всего ' + sum + ' руб.');
+        }
+
+
+    });
+    $('#dev-no').on('change', (e) => {
+        let orderSum = $('.order__price');
+        let container = $(e.target).parents('.shop-page__order');
+        let prices = container.find('.order__price');
+        let price = prices.data('price');
+        prices.attr('data-sum', prices);
+        orderSum.text('Всего ' + price + ' руб.')
+
+        $('.custom-form.js-order button[type="submit"]').attr('data-sum', price);
+    });
+
     $('.removeImage').on('click', (e) => {
         e.preventDefault();
         let uri = $(e.target).data('uri');
