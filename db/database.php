@@ -4,20 +4,17 @@ namespace database;
 
 use mysqli;
 
+include $_SERVER['DOCUMENT_ROOT'] . '/db/config.php';
+
 /**
  * Функия создает соединение с базой данных
  * @return mysqli - соединение с базой данных
  */
 function connect(): mysqli
 {
-    $dbName = 'store_db';
-    $user = 'superuser';
-    $password = 'H0o7M1n7';
-    $host = 'localhost';
-
     static $connect = null;
     if (null === $connect) {
-        $connect = mysqli_connect($host, $user, $password, $dbName);
+        $connect = mysqli_connect(HOST, USER, PASSWORD, DB_NAME);
         if (!$connect) {
             echo 'Код ошибки errno: ' . mysqli_connect_errno();
             exit;
@@ -167,7 +164,7 @@ function getCount(string $uri, array $price): int
         $query = "SELECT COUNT(g.name) AS count FROM categories AS cat
         LEFT JOIN good_category ON category_id=cat.id
         LEFT JOIN goods AS g ON g.id=good_id
-        WHERE cat.url='$uri[0]' && new=true && price>='$min' && price<='$max'";
+        WHERE cat.url='$uri[0]' && new=true && price>=$min && price<=$max";
     } elseif ($uri[0] === '/' && !empty($_GET)) {
         $query = "SELECT COUNT(name) AS count FROM goods
         WHERE price>='$min' && price<='$max'";
@@ -384,7 +381,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE sale=true && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] === '/' && $sale && $new) {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -393,7 +391,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE sale=true && new=true && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] === '/' && !$sale && $new) {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -402,7 +401,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE new=true && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && $sale && !$new) {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -411,7 +411,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE cat.url='$uri[0]' && sale=true && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && $sale && $new) {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -420,7 +421,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE cat.url='$uri[0]' && sale=true && new=true && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] !== '/' && !$sale && $new) {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -429,7 +431,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE cat.url='$uri[0]' && new=true && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } elseif ($uri[0] === '/') {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -438,7 +441,8 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
         WHERE price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         } else {
             $query = "SELECT g.id, g.name, 'desc', price, sale, new, GROUP_CONCAT(link SEPARATOR ', ') AS link 
         FROM categories AS cat
@@ -446,8 +450,9 @@ function getQueryFilter(array $uri, array $price, int $pos): string
         LEFT JOIN goods AS g ON g.id=good_id
         LEFT JOIN good_image ON good_image.good_id=g.id
         LEFT JOIN images AS i ON i.id=image_id
-        WHERE cat.url='$uri[0]' && price>=$min && price<=$max
-        GROUP BY $sort $type LIMIT $pos, $limit";
+        WHERE cat.url='$uri[0]' && price>='$min' && price<='$max'
+        GROUP BY g.id, $sort
+        ORDER BY $sort $type LIMIT $pos, $limit";
         }
     }
 
@@ -484,9 +489,10 @@ function getOrders(): array
     $result = mysqli_query(
         connect(),
         "SELECT o.id, surname, o.name, patronymic, sum, phone, d.type AS delivery, p.type AS payment, completed,
-        city, street, home, app, comment FROM orders AS o
+        city, street, home, app, comment, date FROM orders AS o
         LEFT JOIN delivery AS d ON d.id=delivery_id
-        LEFT JOIN payment AS p ON p.id=payment_id"
+        LEFT JOIN payment AS p ON p.id=payment_id
+        ORDER BY completed ASC, date DESC"
     );
     return getResult($result);
 }

@@ -1337,3 +1337,15 @@ a:focus {
     object-fit: cover;
     margin-bottom: 10px;
 }
+
+.page-products form ul {
+    display: flex;
+    justify-content: space-between;
+    list-style: none;
+    padding: 0;
+    margin: 0 0 20px;
+}
+
+.page-products form {
+    margin: 0 0 20px;
+}

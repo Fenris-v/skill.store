@@ -25,11 +25,12 @@ if (isset($_POST['delivery']) && $_POST['delivery'] === 'dev-no') {
         $comment = mysqli_real_escape_string(database\connect(), $_POST['comment']);
         $goods = (int)mysqli_real_escape_string(database\connect(), $_POST['id']);
         $sum = (int)mysqli_real_escape_string(database\connect(), $_POST['sum']);
+        $date = date('Y-m-d H:i:s');
 
         mysqli_query(
             database\connect(),
-            "INSERT INTO orders (surname, name, patronymic, phone, mail, delivery_id, payment_id, comment, goods, sum)
-                    VALUES ('$surname', '$name', '$patronymic', '$phone', '$email', '$delivery_id', '$payment_id', '$comment', '$goods', '$sum')"
+            "INSERT INTO orders (surname, name, patronymic, phone, mail, delivery_id, payment_id, comment, goods, sum, date)
+                  VALUES ('$surname', '$name', '$patronymic', '$phone', '$email', '$delivery_id', '$payment_id', '$comment', '$goods', '$sum', '$date')"
         );
         database\closeConnect(database\connect());
         echo '<p class="order__success">Заказ успешно оформлен!</p><a href="/">Вернуться в магазин</a>';
@@ -69,13 +70,14 @@ if (isset($_POST['delivery']) && $_POST['delivery'] === 'dev-no') {
         $street = $_POST['street'];
         $home = $_POST['home'];
         $app = $_POST['aprt'];
+        $date = date('Y-m-d H:i:s');
 
         mysqli_query(
             database\connect(),
             "INSERT INTO orders (surname, name, patronymic, phone, mail, delivery_id, city, street, home, 
-                    app, payment_id, comment, goods, sum)
+                    app, payment_id, comment, goods, sum, date)
                     VALUES ('$surname', '$name', '$patronymic', '$phone', '$email', '$delivery_id', '$city', '$street', '$home',
-                            '$app', '$payment_id', '$comment', '$goods', '$sum')"
+                            '$app', '$payment_id', '$comment', '$goods', '$sum', '$date')"
         );
         echo '<p class="order__success">Заказ успешно оформлен!</p><a href="/">Вернуться в магазин</a>';
     } else {

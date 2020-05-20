@@ -1,18 +1,5 @@
 RewriteEngine On
 
-# Дописывает закрывающий слэш в конец
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_URI} !\..{1,10}$
-RewriteCond %{REQUEST_URI} !(.*)/$
-RewriteRule ^(.*)$ http://skill.store/$1/ [L,R=301]
-
-# Для категорий открывает индексный файл, но сохраняет uri
-RewriteRule ^men/$ index.php [L]
-RewriteRule ^women/$ index.php [L]
-RewriteRule ^children/$ index.php [L]
-RewriteRule ^accessories/$ index.php [L]
-RewriteRule ^delivery/$ route/delivery.php [L]
-
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule . http://skill.store/ [R=301]
+RewriteRule (.+) index.php [L,QSA]

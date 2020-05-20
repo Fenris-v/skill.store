@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Хост: localhost
--- Время создания: Май 17 2020 г., 14:15
+-- Время создания: Май 20 2020 г., 22:38
 -- Версия сервера: 10.4.11-MariaDB
 -- Версия PHP: 7.4.4
 
@@ -316,7 +316,7 @@ INSERT INTO `good_image` (`good_id`, `image_id`) VALUES
 (43, 39),
 (44, 40),
 (49, 41),
-(101, 85);
+(101, 87);
 
 -- --------------------------------------------------------
 
@@ -407,8 +407,8 @@ INSERT INTO `images` (`id`, `link`, `alt`) VALUES
 (51, '/templates/img/products/blondie.jpg', NULL),
 (52, '/templates/img/products/usa.jpg', NULL),
 (53, '/templates/img/products/suit.jpg', NULL),
-(85, '/templates/img/new/roadster-earth.png', NULL),
-(86, '/templates/img/new/spacex.jpeg', NULL);
+(86, '/templates/img/new/spacex.jpeg', NULL),
+(87, '/templates/img/new/roadster-earth.png', NULL);
 
 -- --------------------------------------------------------
 
@@ -454,17 +454,19 @@ CREATE TABLE `orders` (
   `comment` text COLLATE utf8_unicode_ci DEFAULT NULL,
   `goods` int(11) NOT NULL,
   `sum` int(11) NOT NULL,
-  `completed` tinyint(1) NOT NULL DEFAULT 0
+  `completed` tinyint(1) NOT NULL DEFAULT 0,
+  `date` datetime NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 
 --
 -- Дамп данных таблицы `orders`
 --
 
-INSERT INTO `orders` (`id`, `surname`, `name`, `patronymic`, `phone`, `mail`, `delivery_id`, `city`, `street`, `home`, `app`, `payment_id`, `comment`, `goods`, `sum`, `completed`) VALUES
-(8, 'Ivanov', 'Ivan', 'Ivanovich', '+79999999999', 'test@gmail.com', 1, NULL, NULL, NULL, NULL, 1, 'New comment', 36, 6000, 1),
-(9, 'Петров', 'Петр', 'Петрович', '+79999999999', 'petrovich@gmail.com', 2, 'Санкт-Петербург', 'Средний проспект В.О.', '10', '15', 1, 'Доставить побыстрее', 32, 9000, 0),
-(10, 'Дмитриенко', 'Виктория', 'Вячеславовна', '+79999999999', 'vika@mail.ru', 2, 'Таганчик', 'Греческая', '33', '13', 1, '', 39, 4000, 0);
+INSERT INTO `orders` (`id`, `surname`, `name`, `patronymic`, `phone`, `mail`, `delivery_id`, `city`, `street`, `home`, `app`, `payment_id`, `comment`, `goods`, `sum`, `completed`, `date`) VALUES
+(8, 'Ivanov', 'Ivan', 'Ivanovich', '+79999999999', 'test@gmail.com', 1, NULL, NULL, NULL, NULL, 1, 'New comment', 36, 6000, 1, '2020-03-21 22:15:56'),
+(9, 'Петров', 'Петр', 'Петрович', '+79999999999', 'petrovich@gmail.com', 2, 'Санкт-Петербург', 'Средний проспект В.О.', '10', '15', 1, 'Доставить побыстрее', 32, 9000, 0, '2020-02-20 22:16:13'),
+(10, 'Дмитриенко', 'Виктория', 'Вячеславовна', '+79999999999', 'vika@mail.ru', 2, 'Таганчик', 'Греческая', '33', '13', 1, '', 39, 4000, 0, '2020-01-20 22:16:18'),
+(11, 'TEST', 'TEST', '', '+79999999999', 't@gmail.com', 1, NULL, NULL, NULL, NULL, 1, 'TEST TEST', 40, 7000, 1, '2020-05-20 21:46:30');
 
 -- --------------------------------------------------------
 
@@ -660,7 +662,7 @@ ALTER TABLE `groups`
 -- AUTO_INCREMENT для таблицы `images`
 --
 ALTER TABLE `images`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=87;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=88;
 
 --
 -- AUTO_INCREMENT для таблицы `menu`
@@ -672,7 +674,7 @@ ALTER TABLE `menu`
 -- AUTO_INCREMENT для таблицы `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT для таблицы `payment`

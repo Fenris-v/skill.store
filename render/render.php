@@ -16,7 +16,7 @@ function renderMenu(array $menu, string $listClass = '', string $itemClass = '',
         <?php
         foreach ($menu as $elem): ?>
             <li>
-                <a class="<?= $itemClass ?> <?= $_SERVER['REQUEST_URI'] === $elem['url'] ? $activeClass : '' ?>"
+                <a class="<?= $itemClass ?> <?= stristr($_SERVER['REQUEST_URI'], '?', TRUE) === $elem['url'] ? $activeClass : '' ?>"
                    href="<?= $elem['url'] ?>"><?= $elem['name'] ?>
                 </a>
             </li>
@@ -176,6 +176,12 @@ function renderOrder(array $order): void
             <div class="order-item__group">
                 <span class="order-item__title">Комментарий к заказу</span>
                 <span class="order-item__info"><?= $order['comment']; ?></span>
+            </div>
+        </div>
+        <div class="order-item__wrapper">
+            <div class="order-item__group">
+                <span class="order-item__title">Дата заказа</span>
+                <span class="order-item__info"><?= $order['date']; ?></span>
             </div>
         </div>
     </li>

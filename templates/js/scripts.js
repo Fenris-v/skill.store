@@ -566,4 +566,17 @@ $(document).ready(() => {
         e.preventDefault();
         changeUrl(1);
     });
+
+    $('#changeDelivery').on('click', (e) => {
+        e.preventDefault();
+        let form = $(e.target).parents('form');
+        let delivery = form.find('#price_delivery').val();
+        let minSum = form.find('#min_sum').val();
+        let params = 'delivery=' + delivery + '&minSum=' + minSum;
+        $.ajax({
+            url: '/data/changeDelivery.php',
+            type: 'POST',
+            data: params
+        })
+    });
 });
